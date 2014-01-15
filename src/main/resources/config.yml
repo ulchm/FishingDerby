@@ -1,0 +1,4 @@
+min-fish-length: 0.2
+max-fish-length: 100
+length-units: '"'
+weight-units: "lbs"
