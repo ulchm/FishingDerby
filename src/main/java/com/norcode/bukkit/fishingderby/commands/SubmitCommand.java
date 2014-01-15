@@ -1,5 +1,6 @@
 package com.norcode.bukkit.fishingderby.commands;
 
+import com.norcode.bukkit.fishingderby.FishingDerby;
 import com.norcode.bukkit.metalcore.MetalCorePlugin;
 import com.norcode.bukkit.metalcore.command.BaseCommand;
 import com.norcode.bukkit.metalcore.command.CommandError;
@@ -13,6 +14,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.LinkedList;
 
 public class SubmitCommand extends BaseCommand {
+
+    private FishingDerby fdPlugin = (FishingDerby) plugin;
+
     public SubmitCommand(MetalCorePlugin plugin) {
         super(plugin, "submit", new String[] {}, "fishingderby.command.submit", new String[] {});
     }
@@ -25,15 +29,12 @@ public class SubmitCommand extends BaseCommand {
         }
         Player player = (Player) commandSender;
         ItemStack stack = player.getItemInHand();
-        ItemMeta meta = stack.getItemMeta();
-        ConfigurationSection cfg = plugin.getPlayerData(player);
 
-        String strLength = meta.getLore().get(0).split(":")[1].trim();
-        strLength = strLength.split(plugin.getConfig().getString("length-units"))[0];
-        String strWeight = meta.getLore().get(1).split(":")[1].trim();
-        strWeight = strWeight.split(plugin.getConfig().getString("weight-units"))[0];
-
-        /* TO-DO: Decide how I want to store this */
-        player.sendMessage("The fish has been added to your derby total.");
+        Boolean added = fdPlugin.addFishToDerby(player, stack);
+        if (added) {
+            player.sendMessage("The fish has been added to your derby total.");
+        } else {
+            player.sendMessage("This fish could not be added to your total.  Already caught your limit?");
+        }
     }
 }
